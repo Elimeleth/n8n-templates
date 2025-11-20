@@ -1,0 +1,329 @@
+{
+    "name": "w-telegram-20-11-12",
+    "nodes": [
+        {
+            "parameters": {
+                "updates": [
+                    "message"
+                ],
+                "additionalFields": {}
+            },
+            "type": "n8n-nodes-base.telegramTrigger",
+            "typeVersion": 1.2,
+            "position": [
+                -688,
+                32
+            ],
+            "id": "7d0025ca-7ab1-4902-88fa-434e64bb7453",
+            "name": "Telegram Trigger",
+            "webhookId": "7f765c10-22fe-4859-ab5d-716869b42da0",
+            "credentials": {}
+        },
+        {
+            "parameters": {},
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                -688,
+                224
+            ],
+            "id": "0e88261b-75a6-4894-87a0-db06728f55f0",
+            "name": "manual"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "df0d2f68-e905-46ae-880d-7b333903fb0c",
+                            "name": "telefono",
+                            "value": "={{ $json.message.from.id }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "6e58199b-a7a9-46c9-9b06-01df72f2f941",
+                            "name": "first_name",
+                            "value": "=elimeleth",
+                            "type": "string"
+                        },
+                        {
+                            "id": "ee7d8abe-121d-4f94-82e1-2425d80bef9d",
+                            "name": "message",
+                            "value": "={{ $json.message.text }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "494a940e-fded-42e6-93aa-ae56a6e09d72",
+                            "name": "message_id",
+                            "value": "={{ $json.message.message_id }}",
+                            "type": "number"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -464,
+                128
+            ],
+            "id": "6dcd235a-9555-4055-a8db-60026f93093d",
+            "name": "telegram vars"
+        },
+        {
+            "parameters": {},
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                -16,
+                -64
+            ],
+            "id": "d107debb-a783-427f-8d5b-8eb0c02ff8eb",
+            "name": "Wait",
+            "webhookId": "3d558b41-3f58-4f6b-b83a-3c9ba2eee194"
+        },
+        {
+            "parameters": {
+                "content": "### Telegram trigger",
+                "height": 256,
+                "width": 272,
+                "color": 5
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "position": [
+                -776,
+                -64
+            ],
+            "typeVersion": 1,
+            "id": "cdd35e40-4c0c-4263-8573-40290df12323",
+            "name": "Sticky Note"
+        },
+        {
+            "parameters": {
+                "operation": "sendChatAction",
+                "chatId": "={{ $json.telefono }}"
+            },
+            "type": "n8n-nodes-base.telegram",
+            "typeVersion": 1.2,
+            "position": [
+                -240,
+                -64
+            ],
+            "id": "2640298f-4a0b-4672-b33e-5e2b282bcfb1",
+            "name": "typing",
+            "webhookId": "67cdecba-9962-43f1-a9ca-381237205a0f",
+            "credentials": {
+                "telegramApi": {
+                    "id": "4Z37x5boJw4SYlK4",
+                    "name": "Test bot"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "rules": {
+                    "values": [
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 2
+                                },
+                                "conditions": [
+                                    {
+                                        "leftValue": "={{ $json.message }}",
+                                        "rightValue": "n8n",
+                                        "operator": {
+                                            "type": "string",
+                                            "operation": "contains"
+                                        },
+                                        "id": "6b1263ec-e933-4913-b9d9-27bd245d8dc8"
+                                    }
+                                ],
+                                "combinator": "and"
+                            },
+                            "renameOutput": true,
+                            "outputKey": "n8n"
+                        },
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 2
+                                },
+                                "conditions": [
+                                    {
+                                        "id": "00d9fde9-fec6-4be0-9fda-88ae23a7dca5",
+                                        "leftValue": "={{ $json.message }}",
+                                        "rightValue": "n8n",
+                                        "operator": {
+                                            "type": "string",
+                                            "operation": "notContains"
+                                        }
+                                    }
+                                ],
+                                "combinator": "and"
+                            },
+                            "renameOutput": true,
+                            "outputKey": "sin n8n"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.switch",
+            "typeVersion": 3.3,
+            "position": [
+                -240,
+                224
+            ],
+            "id": "7e339f89-ffd6-4bdf-892e-86fb77dd4380",
+            "name": "cases"
+        },
+        {
+            "parameters": {
+                "chatId": "={{ $json.telefono }}",
+                "text": "hola lei tu mensaje",
+                "additionalFields": {
+                    "appendAttribution": false,
+                    "reply_to_message_id": "={{ $json.message_id }}"
+                }
+            },
+            "type": "n8n-nodes-base.telegram",
+            "typeVersion": 1.2,
+            "position": [
+                -16,
+                128
+            ],
+            "id": "5288521e-81d6-4fe8-89b8-e6b0c6157bf5",
+            "name": "message 1",
+            "webhookId": "be5a9924-1fe8-4ca1-944e-35957dcf59a1",
+            "credentials": {
+                "telegramApi": {
+                    "id": "4Z37x5boJw4SYlK4",
+                    "name": "Test bot"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "chatId": "={{ $json.telefono }}",
+                "text": "porfa agrega la palabra 'n8n'",
+                "additionalFields": {
+                    "appendAttribution": false,
+                    "reply_to_message_id": "={{ $json.message_id }}"
+                }
+            },
+            "type": "n8n-nodes-base.telegram",
+            "typeVersion": 1.2,
+            "position": [
+                -16,
+                320
+            ],
+            "id": "d2b0a5ef-0f75-4d6b-a827-2ba941b3d7b9",
+            "name": "message 2",
+            "webhookId": "be5a9924-1fe8-4ca1-944e-35957dcf59a1",
+            "credentials": {
+                "telegramApi": {
+                    "id": "4Z37x5boJw4SYlK4",
+                    "name": "Test bot"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "content": "### Send message",
+                "height": 384,
+                "width": 400,
+                "color": 5
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "position": [
+                -80,
+                96
+            ],
+            "typeVersion": 1,
+            "id": "835fe7e2-b7e8-4195-a1ef-25e5589691ad",
+            "name": "Sticky Note1"
+        }
+    ],
+    "connections": {
+        "Telegram Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "telegram vars",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "manual": {
+            "main": [
+                [
+                    {
+                        "node": "telegram vars",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "telegram vars": {
+            "main": [
+                [
+                    {
+                        "node": "cases",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "typing",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "typing": {
+            "main": [
+                [
+                    {
+                        "node": "Wait",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "cases": {
+            "main": [
+                [
+                    {
+                        "node": "message 1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "message 2",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "pinData": {},
+    "meta": {
+        "templateCredsSetupCompleted": true,
+        "instanceId": "36fb47fa075c0b7c1573b6b17d534428356885f9edd11f3e328d118ed9e5906f"
+    }
+}
