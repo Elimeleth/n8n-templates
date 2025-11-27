@@ -1,0 +1,48 @@
+{
+"name": "error handler",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        16
+      ],
+      "id": "b40cc7a7-4b5e-4151-8d3a-08b38cb2a095",
+      "name": "error"
+    },
+    {
+      "parameters": {
+        "chatId": "",
+        "text": "={{ $json.execution.url }}\n{{ $json.execution.error.message }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        16
+      ],
+      "id": "45578ab7-584a-4879-afa3-080479943622",
+      "name": "Send a text message",
+      "webhookId": "663c4c71-a45e-4a09-b355-d6c126cc0304",
+      "credentials": {}
+    }
+  ],
+  "connections": {
+    "error": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {}
+}

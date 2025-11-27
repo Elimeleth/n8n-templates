@@ -1,0 +1,316 @@
+{
+  "name": "w-telegram-271125",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -480,
+        -96
+      ],
+      "id": "012b3420-808e-4f6d-8405-170d444f31f2",
+      "name": "Telegram Trigger",
+      "webhookId": "7f765c10-22fe-4859-ab5d-716869b42da0",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "df0d2f68-e905-46ae-880d-7b333903fb0c",
+              "name": "telefono",
+              "value": "={{ $json.message.from.id }}",
+              "type": "string"
+            },
+            {
+              "id": "6e58199b-a7a9-46c9-9b06-01df72f2f941",
+              "name": "first_name",
+              "value": "=elimeleth",
+              "type": "string"
+            },
+            {
+              "id": "ee7d8abe-121d-4f94-82e1-2425d80bef9d",
+              "name": "message",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            },
+            {
+              "id": "494a940e-fded-42e6-93aa-ae56a6e09d72",
+              "name": "message_id",
+              "value": "={{ $json.message.message_id }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -256,
+        -96
+      ],
+      "id": "022de4e5-c91f-49bd-9034-f90f1f494e01",
+      "name": "telegram vars"
+    },
+    {
+      "parameters": {
+        "amount": 1.5
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        992,
+        -160
+      ],
+      "id": "c3e60ded-31c9-457e-997c-f3514669486f",
+      "name": "Wait",
+      "webhookId": "3d558b41-3f58-4f6b-b83a-3c9ba2eee194"
+    },
+    {
+      "parameters": {
+        "operation": "sendChatAction",
+        "chatId": "={{ $('telegram vars').item.json.telefono }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        768,
+        -160
+      ],
+      "id": "4d71b199-9710-403f-a63a-f3208c684644",
+      "name": "typing",
+      "webhookId": "67cdecba-9962-43f1-a9ca-381237205a0f",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('telegram vars').item.json.telefono }}",
+        "text": "={{ $('Loop Over Items').item.json.text }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "reply_to_message_id": "={{ $('telegram vars').item.json.message_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1216,
+        -96
+      ],
+      "id": "52dad9b8-9c5f-4dbf-810f-f3041ee00684",
+      "name": "message 1",
+      "webhookId": "be5a9924-1fe8-4ca1-944e-35957dcf59a1",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -32,
+        -96
+      ],
+      "id": "b96df87f-b931-438a-9ae9-04ac35355864",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        112
+      ],
+      "id": "ee8ee672-30ea-48cb-abe3-5a17dd6e3017",
+      "name": "gemini",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.telefono }}",
+        "contextWindowLength": 8
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        80,
+        128
+      ],
+      "id": "ade1b6cf-0368-41f7-a5c9-bfac56af6e76",
+      "name": "memoria"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        496,
+        -96
+      ],
+      "id": "83c1b621-24c5-4cfa-b13f-eca044aced18",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "jsCode": "const texts = $input.first().json.output.split('\\n\\n')\n\nreturn texts.map(text => ({\n  json: { text }\n}))"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        -96
+      ],
+      "id": "0a205d8a-35c5-4d59-bb5b-c7848a94f43b",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        640,
+        -304
+      ],
+      "id": "ac15025f-b562-4ece-91f7-90d058227603",
+      "name": "No Operation, do nothing"
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "telegram vars",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "telegram vars": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "message 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "typing": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "message 1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gemini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "memoria": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "typing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {}
+}
