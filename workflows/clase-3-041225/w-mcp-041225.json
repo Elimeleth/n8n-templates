@@ -1,0 +1,304 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "path": "4cbb85dc-ee43-4340-a3f5-caf642a264c1"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        -8,
+        -160
+      ],
+      "id": "d1e7f590-889d-4f03-bb07-eff915548136",
+      "name": "MCP Server Trigger",
+      "webhookId": "4cbb85dc-ee43-4340-a3f5-caf642a264c1"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Agrega una nueva tarea",
+        "dataTableId": {
+          "__rl": true,
+          "value": "GMAWCjIhUpf0Wc9w",
+          "mode": "list",
+          "cachedResultName": "todo",
+          "cachedResultUrl": "/projects/RTUxSaWTNyTCymto/datatables/GMAWCjIhUpf0Wc9w"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "completed": "={{ false }}",
+            "task": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('task', `La tarea que desea agregar el usuario`, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "task",
+              "displayName": "task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "completed",
+              "displayName": "completed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTableTool",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        64
+      ],
+      "id": "1ad887d5-38a4-42a5-adb3-9ffa95b954d2",
+      "name": "append"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Elimina una tarea existente",
+        "operation": "deleteRows",
+        "dataTableId": {
+          "__rl": true,
+          "value": "GMAWCjIhUpf0Wc9w",
+          "mode": "list",
+          "cachedResultName": "todo",
+          "cachedResultUrl": "/projects/RTUxSaWTNyTCymto/datatables/GMAWCjIhUpf0Wc9w"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Value', `El identificador de la tarea`, 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTableTool",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        64
+      ],
+      "id": "55ad32a5-6d20-41f4-995c-4dda815dd5c2",
+      "name": "delete"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "GMAWCjIhUpf0Wc9w",
+          "mode": "list",
+          "cachedResultName": "todo",
+          "cachedResultUrl": "/projects/RTUxSaWTNyTCymto/datatables/GMAWCjIhUpf0Wc9w"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Value', `El identificador de la tarea`, 'string') }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "completed": true
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "task",
+              "displayName": "task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "completed",
+              "displayName": "completed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTableTool",
+      "typeVersion": 1,
+      "position": [
+        64,
+        64
+      ],
+      "id": "01a8446d-6c60-4fb1-b995-1f7365d2a45c",
+      "name": "mark-completed"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "listar tareas",
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "GMAWCjIhUpf0Wc9w",
+          "mode": "list",
+          "cachedResultName": "todo",
+          "cachedResultUrl": "/projects/RTUxSaWTNyTCymto/datatables/GMAWCjIhUpf0Wc9w"
+        },
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.dataTableTool",
+      "typeVersion": 1,
+      "position": [
+        192,
+        64
+      ],
+      "id": "26dbc5a9-3164-4954-b2c4-4692a9b1ed27",
+      "name": "list"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Actualizar tarea",
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "GMAWCjIhUpf0Wc9w",
+          "mode": "list",
+          "cachedResultName": "todo",
+          "cachedResultUrl": "/projects/RTUxSaWTNyTCymto/datatables/GMAWCjIhUpf0Wc9w"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Value', `El identificador de la tarea`, 'string') }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "task": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('task', `La nueva tarea`, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "task",
+              "displayName": "task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "completed",
+              "displayName": "completed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTableTool",
+      "typeVersion": 1,
+      "position": [
+        320,
+        64
+      ],
+      "id": "68a05682-ecc1-424a-aa93-29741fabc212",
+      "name": "update"
+    }
+  ],
+  "connections": {
+    "append": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "delete": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "mark-completed": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "list": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {}
+}
