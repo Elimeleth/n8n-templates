@@ -30,7 +30,7 @@
           "value": {
             "reminder": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('reminder', `El recordatorio que agregara el usuario`, 'string') }}",
             "reminder_date": "={{ DateTime.fromISO($fromAI('reminder_date', `La fecha del recordatorio en formato ISO`, 'string')) }}",
-            "telefono": "1869174190"
+            "telefono": ""
           },
           "matchingColumns": [],
           "schema": [

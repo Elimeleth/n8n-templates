@@ -1,5 +1,5 @@
 {
-    "name": "cron-reminder",
+  "name": "cron-reminder",
   "nodes": [
     {
       "parameters": {
@@ -151,7 +151,7 @@
       "typeVersion": 1,
       "position": [
         1264,
-        216
+        224
       ],
       "id": "d71e6674-3de9-4482-b2ab-2c044247d3b8",
       "name": "delete reminder"
@@ -195,41 +195,40 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "loose",
+            "typeValidation": "strict",
             "version": 2
           },
           "conditions": [
             {
-              "id": "98ee91f1-fb56-4885-8146-74b22187757e",
-              "leftValue": "={{ $json.reminder_date.toDateTime().setZone('America/Caracas') }}",
-              "rightValue": "={{ $now.minus(5, 'minutes') }}",
+              "id": "a26727ff-67d7-47fd-80c7-97e3034db732",
+              "leftValue": "={{ $json.reminder_date.toDateTime().setZone('America/Mexico_City') }}",
+              "rightValue": "={{ $now.setZone('America/Caracas').minus(5, 'minutes')}}",
               "operator": {
                 "type": "dateTime",
                 "operation": "afterOrEquals"
               }
             },
             {
-              "id": "02eb8a4c-3ce1-4440-93dd-7e96e9becfb3",
-              "leftValue": "={{ $json.reminder_date.toDateTime().setZone('America/Caracas') }}",
-              "rightValue": "={{ $now.plus(5, 'minutes') }}",
+              "id": "be14ea5c-9ef8-41e6-90ee-4664a1dddd67",
+              "leftValue": "={{ $json.reminder_date.toDateTime().setZone('America/Mexico_City') }}",
+              "rightValue": "={{ $now.setZone('America/Caracas').plus(5, 'minutes')}}",
               "operator": {
                 "type": "dateTime",
                 "operation": "beforeOrEquals"
               }
             }
           ],
-          "combinator": "or"
+          "combinator": "and"
         },
-        "looseTypeValidation": true,
         "options": {}
       },
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        368,
-        144
+        352,
+        128
       ],
-      "id": "49bec8c5-d647-4ae1-ba1a-558d8c52cc88",
+      "id": "fd36eff4-5ab4-4a40-8e73-4811e1595730",
       "name": "Filter"
     }
   ],
@@ -334,6 +333,22 @@
       ]
     }
   },
-  "pinData": {},
+  "pinData": {
+    "Schedule Trigger": [
+      {
+        "timestamp": "2025-12-11T13:42:47.189-04:00",
+        "Readable date": "December 11th 2025, 1:42:47 pm",
+        "Readable time": "1:42:47 pm",
+        "Day of week": "Thursday",
+        "Year": "2025",
+        "Month": "December",
+        "Day of month": "11",
+        "Hour": "13",
+        "Minute": "42",
+        "Second": "47",
+        "Timezone": "America/Caracas (UTC-04:00)"
+      }
+    ]
+  },
   "meta": {}
 }
