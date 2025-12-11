@@ -1,0 +1,339 @@
+{
+    "name": "cron-reminder",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "seconds",
+              "secondsInterval": 20
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -304,
+        144
+      ],
+      "id": "9802ab0c-d299-4727-93e4-30eab5e3c4fa",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "ZF61nXWPbrTrTc7T",
+          "mode": "list",
+          "cachedResultName": "reminders",
+          "cachedResultUrl": "/projects/RTUxSaWTNyTCymto/datatables/ZF61nXWPbrTrTc7T"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "reminder_date",
+              "condition": "gte",
+              "keyValue": "={{ DateTime.now().minus(5, 'minutes') }}"
+            },
+            {
+              "keyName": "reminder_date",
+              "condition": "lte",
+              "keyValue": "={{ DateTime.now().plus(5, 'minutes') }}"
+            }
+          ]
+        },
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        144
+      ],
+      "id": "cbfc2c28-979f-44ea-aa24-0af0be8a449c",
+      "name": "get reminders"
+    },
+    {
+      "parameters": {
+        "amount": 1.5
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        144
+      ],
+      "id": "9520959c-1c99-4c20-9b0c-0ba5f873505b",
+      "name": "Wait",
+      "webhookId": "3d558b41-3f58-4f6b-b83a-3c9ba2eee194"
+    },
+    {
+      "parameters": {
+        "operation": "sendChatAction",
+        "chatId": "={{ $json.telefono }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        816,
+        -48
+      ],
+      "id": "bd34081a-31eb-4a9a-8664-4609e935039a",
+      "name": "typing",
+      "webhookId": "67cdecba-9962-43f1-a9ca-381237205a0f",
+      "credentials": {
+        "telegramApi": {
+          "id": "U3yNkhUzRFtwJQNw",
+          "name": "local"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.telefono }}",
+        "text": "=Recordatorio programado\n\nRecordatorio: {{ $json.reminder }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        816,
+        144
+      ],
+      "id": "3ae39253-e866-4c06-9817-dd3d7b045a0c",
+      "name": "message 1",
+      "webhookId": "be5a9924-1fe8-4ca1-944e-35957dcf59a1",
+      "credentials": {
+        "telegramApi": {
+          "id": "U3yNkhUzRFtwJQNw",
+          "name": "local"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        592,
+        144
+      ],
+      "id": "c13065fe-e6a7-4bd0-8195-e392dcc75489",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "operation": "deleteRows",
+        "dataTableId": {
+          "__rl": true,
+          "value": "ZF61nXWPbrTrTc7T",
+          "mode": "list",
+          "cachedResultName": "reminders",
+          "cachedResultUrl": "/projects/RTUxSaWTNyTCymto/datatables/ZF61nXWPbrTrTc7T"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyValue": "={{ $('get reminders').item.json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        1264,
+        216
+      ],
+      "id": "d71e6674-3de9-4482-b2ab-2c044247d3b8",
+      "name": "delete reminder"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9aa0dcdb-cc77-4eb1-93f2-17dad7cc8847",
+              "leftValue": "={{ $json.reminder_date.toDateTime().day }}",
+              "rightValue": "={{ $now.day }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        144,
+        144
+      ],
+      "id": "2a3405be-9d34-48c8-a539-4fbda5b3081c",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "98ee91f1-fb56-4885-8146-74b22187757e",
+              "leftValue": "={{ $json.reminder_date.toDateTime().setZone('America/Caracas') }}",
+              "rightValue": "={{ $now.minus(5, 'minutes') }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "afterOrEquals"
+              }
+            },
+            {
+              "id": "02eb8a4c-3ce1-4440-93dd-7e96e9becfb3",
+              "leftValue": "={{ $json.reminder_date.toDateTime().setZone('America/Caracas') }}",
+              "rightValue": "={{ $now.plus(5, 'minutes') }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "beforeOrEquals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        368,
+        144
+      ],
+      "id": "49bec8c5-d647-4ae1-ba1a-558d8c52cc88",
+      "name": "Filter"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "get reminders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get reminders": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "delete reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "typing": {
+      "main": [
+        []
+      ]
+    },
+    "message 1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "typing",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "message 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "delete reminder": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {}
+}
