@@ -181,7 +181,7 @@
         },
         {
             "parameters": {
-                "endpointUrl": "https://tun-ma2wa2n7hy727ffcl68zluo.conglomere.com/mcp/ac5ef604-269f-4c73-98d3-a2e234f40ab2",
+                "endpointUrl": "",
                 "options": {}
             },
             "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
