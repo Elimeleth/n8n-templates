@@ -1,0 +1,364 @@
+{
+    "name": "w-telegram-181225",
+    "nodes": [
+        {
+            "parameters": {
+                "updates": [
+                    "message"
+                ],
+                "additionalFields": {}
+            },
+            "type": "n8n-nodes-base.telegramTrigger",
+            "typeVersion": 1.2,
+            "position": [
+                -1856,
+                96
+            ],
+            "id": "e0c16823-63af-4ede-acfa-f6184da3b33e",
+            "name": "Telegram Trigger",
+            "webhookId": "7f765c10-22fe-4859-ab5d-716869b42da0",
+            "credentials": {}
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "df0d2f68-e905-46ae-880d-7b333903fb0c",
+                            "name": "telefono",
+                            "value": "={{ $json.message.from.id }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "6e58199b-a7a9-46c9-9b06-01df72f2f941",
+                            "name": "first_name",
+                            "value": "=elimeleth",
+                            "type": "string"
+                        },
+                        {
+                            "id": "ee7d8abe-121d-4f94-82e1-2425d80bef9d",
+                            "name": "message",
+                            "value": "={{ $json.message.text }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "494a940e-fded-42e6-93aa-ae56a6e09d72",
+                            "name": "message_id",
+                            "value": "={{ $json.message.message_id }}",
+                            "type": "number"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -1632,
+                96
+            ],
+            "id": "f08812dc-e132-4338-bc8f-abee0424a8b2",
+            "name": "telegram vars"
+        },
+        {
+            "parameters": {
+                "amount": 1.5
+            },
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                -272,
+                96
+            ],
+            "id": "94e36449-537a-4c37-8827-8c3b65d9b64a",
+            "name": "Wait",
+            "webhookId": "3d558b41-3f58-4f6b-b83a-3c9ba2eee194"
+        },
+        {
+            "parameters": {
+                "operation": "sendChatAction",
+                "chatId": "={{ $('telegram vars').item.json.telefono }}"
+            },
+            "type": "n8n-nodes-base.telegram",
+            "typeVersion": 1.2,
+            "position": [
+                -496,
+                96
+            ],
+            "id": "dc3abc90-98af-44dc-aa4b-68a8c8a15377",
+            "name": "typing",
+            "webhookId": "67cdecba-9962-43f1-a9ca-381237205a0f",
+            "credentials": {}
+        },
+        {
+            "parameters": {
+                "chatId": "={{ $('telegram vars').item.json.telefono }}",
+                "text": "={{ $('Loop Over Items').item.json.text }}",
+                "additionalFields": {
+                    "appendAttribution": false,
+                    "reply_to_message_id": "={{ $('telegram vars').item.json.message_id }}"
+                }
+            },
+            "type": "n8n-nodes-base.telegram",
+            "typeVersion": 1.2,
+            "position": [
+                -48,
+                176
+            ],
+            "id": "4f01d738-487c-4ffb-bf54-275363991af5",
+            "name": "message 1",
+            "webhookId": "be5a9924-1fe8-4ca1-944e-35957dcf59a1",
+            "credentials": {}
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "={{ $json.message }}",
+                "options": {
+                    "systemMessage": "=El asistente debe gestionar recordatorios con las operaciones: agregar, eliminar, listar y actualizar.\n\nAgregar: requiere un texto del recordatorio y una fecha proporcionada por el usuario. La fecha puede venir en formato absoluto o en lenguaje coloquial como “mañana”, “pasado mañana”, “próximo lunes”, etc. Debe usar la función dates para convertir esta expresión en una fecha exacta y pasar tanto el texto como la fecha convertida a la función agregar. Luego debe informar al usuario que el recordatorio fue creado indicando el texto y la fecha resultante.\n\nEliminar / Actualizar: requieren el identificador del recordatorio. Tras ejecutar la acción indicada, debe informar al usuario que el recordatorio con ese texto fue eliminado o actualizado.\n\nListar: permite saber si el usuario tiene recordatorios.\n\nSi el usuario escribe algo y no tiene recordatorios, debe preguntar si desea agregar alguno.\n\nSi el usuario sí tiene recordatorios, debe preguntar si desea agregar, eliminar o actualizar usando la información obtenida de listar.\n\nEl asistente debe interpretar correctamente la intención del usuario en cada mensaje y elegir la acción adecuada según el contexto.\n\nFecha actual: {{ $now }}"
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "typeVersion": 3,
+            "position": [
+                -1360,
+                96
+            ],
+            "id": "2651a15c-9ad1-4c60-812c-d2fe0dc3384a",
+            "name": "AI Agent"
+        },
+        {
+            "parameters": {
+                "modelName": "models/gemini-3-flash-preview",
+                "options": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+            "typeVersion": 1,
+            "position": [
+                -1856,
+                432
+            ],
+            "id": "d3e893b7-43f1-4571-acc9-8eeb50f462de",
+            "name": "gemini",
+            "credentials": {}
+        },
+        {
+            "parameters": {
+                "options": {}
+            },
+            "type": "n8n-nodes-base.splitInBatches",
+            "typeVersion": 3,
+            "position": [
+                -720,
+                96
+            ],
+            "id": "41b91d16-4b0a-4de1-9a99-4ed9242d79f4",
+            "name": "Loop Over Items"
+        },
+        {
+            "parameters": {
+                "jsCode": "const texts = $input.first().json.output.split('\\n\\n')\n\nreturn texts.map(text => ({\n  json: { text }\n}))"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                -944,
+                96
+            ],
+            "id": "2708cb33-c756-4d6f-88b9-32baa4b30b00",
+            "name": "Code in JavaScript"
+        },
+        {
+            "parameters": {},
+            "type": "n8n-nodes-base.noOp",
+            "typeVersion": 1,
+            "position": [
+                -496,
+                -96
+            ],
+            "id": "65cd786c-92fb-45ea-b685-f2c5f5254f7c",
+            "name": "No Operation, do nothing"
+        },
+        {
+            "parameters": {
+                "endpointUrl": "https://tun-ma2wa2n7hy727ffcl68zluo.conglomere.com/mcp/ac5ef604-269f-4c73-98d3-a2e234f40ab2",
+                "options": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+            "typeVersion": 1.2,
+            "position": [
+                -1152,
+                320
+            ],
+            "id": "e7c75658-a545-4102-bbb7-ac9e16895eea",
+            "name": "todo task actions"
+        },
+        {
+            "parameters": {
+                "model": "openai/gpt-oss-120b",
+                "options": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+            "typeVersion": 1,
+            "position": [
+                -1392,
+                320
+            ],
+            "id": "524eb1cf-d5bb-4cb4-a958-6af8f2a47a2d",
+            "name": "groq",
+            "credentials": {}
+        },
+        {
+            "parameters": {
+                "sessionIdType": "customKey",
+                "sessionKey": "={{ String($('Telegram Trigger').item.json.message.from.id) }}",
+                "contextWindowLength": 2
+            },
+            "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+            "typeVersion": 1.3,
+            "position": [
+                -1280,
+                288
+            ],
+            "id": "37a42cdd-171c-4a15-9ed5-bd04e03c2226",
+            "name": "memory"
+        }
+    ],
+    "connections": {
+        "Telegram Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "telegram vars",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "telegram vars": {
+            "main": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Wait": {
+            "main": [
+                [
+                    {
+                        "node": "message 1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "typing": {
+            "main": [
+                [
+                    {
+                        "node": "Wait",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "message 1": {
+            "main": [
+                [
+                    {
+                        "node": "Loop Over Items",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "AI Agent": {
+            "main": [
+                [
+                    {
+                        "node": "Code in JavaScript",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "gemini": {
+            "ai_languageModel": [
+                []
+            ]
+        },
+        "Loop Over Items": {
+            "main": [
+                [
+                    {
+                        "node": "No Operation, do nothing",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "typing",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Code in JavaScript": {
+            "main": [
+                [
+                    {
+                        "node": "Loop Over Items",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "todo task actions": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "groq": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "memory": {
+            "ai_memory": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "ai_memory",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "pinData": {},
+    "meta": {}
+}

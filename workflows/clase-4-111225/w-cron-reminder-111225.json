@@ -202,7 +202,7 @@
             {
               "id": "a26727ff-67d7-47fd-80c7-97e3034db732",
               "leftValue": "={{ $json.reminder_date.toDateTime().setZone('America/Mexico_City') }}",
-              "rightValue": "={{ $now.setZone('America/Caracas').minus(5, 'minutes')}}",
+              "rightValue": "={{ $now.setZone('America/Mexico_City').minus(5, 'minutes')}}",
               "operator": {
                 "type": "dateTime",
                 "operation": "afterOrEquals"
@@ -211,7 +211,7 @@
             {
               "id": "be14ea5c-9ef8-41e6-90ee-4664a1dddd67",
               "leftValue": "={{ $json.reminder_date.toDateTime().setZone('America/Mexico_City') }}",
-              "rightValue": "={{ $now.setZone('America/Caracas').plus(5, 'minutes')}}",
+              "rightValue": "={{ $now.setZone('America/Mexico_City').plus(5, 'minutes')}}",
               "operator": {
                 "type": "dateTime",
                 "operation": "beforeOrEquals"
@@ -333,22 +333,6 @@
       ]
     }
   },
-  "pinData": {
-    "Schedule Trigger": [
-      {
-        "timestamp": "2025-12-11T13:42:47.189-04:00",
-        "Readable date": "December 11th 2025, 1:42:47 pm",
-        "Readable time": "1:42:47 pm",
-        "Day of week": "Thursday",
-        "Year": "2025",
-        "Month": "December",
-        "Day of month": "11",
-        "Hour": "13",
-        "Minute": "42",
-        "Second": "47",
-        "Timezone": "America/Caracas (UTC-04:00)"
-      }
-    ]
-  },
+  "pinData": {},
   "meta": {}
 }

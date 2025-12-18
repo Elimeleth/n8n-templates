@@ -1,0 +1,396 @@
+{
+    "name": "mcp-sheet-reminder-181225",
+    "nodes": [
+        {
+            "parameters": {
+                "path": "ac5ef604-269f-4c73-98d3-a2e234f40ab2"
+            },
+            "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+            "typeVersion": 2,
+            "position": [
+                160,
+                -32
+            ],
+            "id": "790d13c0-6216-4ad5-96fc-beb5b0434926",
+            "name": "MCP Server Trigger",
+            "webhookId": "ac5ef604-269f-4c73-98d3-a2e234f40ab2"
+        },
+        {
+            "parameters": {
+                "descriptionType": "manual",
+                "toolDescription": "agrega un nuevo recordatorio",
+                "authentication": "serviceAccount",
+                "operation": "append",
+                "documentId": {
+                    "__rl": true,
+                    "value": "1vRwH1GqEP-KWBnKMggMQrdRi3hweCf1BRs3arHRmw84",
+                    "mode": "list",
+                    "cachedResultName": "reminders",
+                    "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vRwH1GqEP-KWBnKMggMQrdRi3hweCf1BRs3arHRmw84/edit?usp=drivesdk"
+                },
+                "sheetName": {
+                    "__rl": true,
+                    "value": "gid=0",
+                    "mode": "list",
+                    "cachedResultName": "reminder",
+                    "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vRwH1GqEP-KWBnKMggMQrdRi3hweCf1BRs3arHRmw84/edit#gid=0"
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "created_at": "={{ $now }}",
+                        "completed": "NO",
+                        "reminder": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('reminder', `El recordatorio que agregara el usuario`, 'string') }}",
+                        "reminder_date": "={{ DateTime.fromISO($fromAI('reminder_date', `La fecha del recordatorio en formato ISO`, 'string')) }}",
+                        "validating_day": "={{ DateTime.fromISO($fromAI('reminder_date', `La fecha del recordatorio en formato ISO`, 'string')).format('d/MM') }}",
+                        "telefono": "="
+                    },
+                    "matchingColumns": [],
+                    "schema": [
+                        {
+                            "id": "ID",
+                            "displayName": "ID",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true,
+                            "removed": true
+                        },
+                        {
+                            "id": "reminder",
+                            "displayName": "reminder",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true
+                        },
+                        {
+                            "id": "telefono",
+                            "displayName": "telefono",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true,
+                            "removed": false
+                        },
+                        {
+                            "id": "reminder_date",
+                            "displayName": "reminder_date",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true
+                        },
+                        {
+                            "id": "validating_day",
+                            "displayName": "validating_day",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true
+                        },
+                        {
+                            "id": "completed",
+                            "displayName": "completed",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true
+                        },
+                        {
+                            "id": "created_at",
+                            "displayName": "created_at",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true
+                        }
+                    ],
+                    "attemptToConvertTypes": false,
+                    "convertFieldsToString": false
+                },
+                "options": {
+                    "useAppend": true
+                }
+            },
+            "type": "n8n-nodes-base.googleSheetsTool",
+            "typeVersion": 4.7,
+            "position": [
+                -32,
+                192
+            ],
+            "id": "2d130330-fa7f-4c54-80be-cc10966d8d25",
+            "name": "agregar",
+            "credentials": {}
+        },
+        {
+            "parameters": {
+                "descriptionType": "manual",
+                "toolDescription": "Lista los recordatorios",
+                "authentication": "serviceAccount",
+                "documentId": {
+                    "__rl": true,
+                    "value": "1vRwH1GqEP-KWBnKMggMQrdRi3hweCf1BRs3arHRmw84",
+                    "mode": "list",
+                    "cachedResultName": "reminders",
+                    "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vRwH1GqEP-KWBnKMggMQrdRi3hweCf1BRs3arHRmw84/edit?usp=drivesdk"
+                },
+                "sheetName": {
+                    "__rl": true,
+                    "value": "gid=0",
+                    "mode": "list",
+                    "cachedResultName": "reminder",
+                    "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vRwH1GqEP-KWBnKMggMQrdRi3hweCf1BRs3arHRmw84/edit#gid=0"
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.googleSheetsTool",
+            "typeVersion": 4.7,
+            "position": [
+                96,
+                192
+            ],
+            "id": "da3c37d4-aefa-4d55-8681-fe464aa356bc",
+            "name": "listar",
+            "credentials": {}
+        },
+        {
+            "parameters": {
+                "description": "Obten la lista de fechas del mes para poder hacer busqueda de disponibilidad",
+                "jsCode": "function getMonthWeekdayMap(year, month) {\n  const weekdays = [\n    \"lunes\",\n    \"martes\",\n    \"miercoles\",\n    \"jueves\",\n    \"viernes\",\n    \"sabado\",\n    \"domingo\"\n  ];\n\n  const createEmptyResult = () => ({\n    lunes: [],\n    martes: [],\n    miercoles: [],\n    jueves: [],\n    viernes: [],\n    sabado: [],\n    domingo: []\n  });\n\n  const result = createEmptyResult();\n\n  const today = new Date();\n  today.setHours(0, 0, 0, 0);\n\n  const fillMonth = (y, m) => {\n    const jsMonth = m - 1;\n    const date = new Date(y, jsMonth, 1);\n\n    while (date.getMonth() === jsMonth) {\n      const current = new Date(date);\n\n      if (current >= today) {\n        const dayIndex = (current.getDay() + 6) % 7;\n        const dayName = weekdays[dayIndex];\n        const formatted = current.toISOString().split(\"T\")[0];\n        result[dayName].push(formatted);\n      }\n\n      date.setDate(date.getDate() + 1);\n    }\n  };\n\n  // Mes actual\n  fillMonth(year, month);\n\n  // Mes siguiente\n  const nextMonth = month === 12 ? 1 : month + 1;\n  const nextYear = month === 12 ? year + 1 : year;\n  fillMonth(nextYear, nextMonth);\n\n  return result;\n}\n\n// Ejemplo:\nreturn JSON.stringify(getMonthWeekdayMap($now.year, $now.month));\n"
+            },
+            "type": "@n8n/n8n-nodes-langchain.toolCode",
+            "typeVersion": 1.3,
+            "position": [
+                224,
+                192
+            ],
+            "id": "a91070d5-5777-405d-a689-6d128b73f08a",
+            "name": "dates"
+        },
+        {
+            "parameters": {
+                "descriptionType": "manual",
+                "toolDescription": "actualiza un recordatorio",
+                "authentication": "serviceAccount",
+                "operation": "update",
+                "documentId": {
+                    "__rl": true,
+                    "value": "1vRwH1GqEP-KWBnKMggMQrdRi3hweCf1BRs3arHRmw84",
+                    "mode": "list",
+                    "cachedResultName": "reminders",
+                    "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vRwH1GqEP-KWBnKMggMQrdRi3hweCf1BRs3arHRmw84/edit?usp=drivesdk"
+                },
+                "sheetName": {
+                    "__rl": true,
+                    "value": "gid=0",
+                    "mode": "list",
+                    "cachedResultName": "reminder",
+                    "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vRwH1GqEP-KWBnKMggMQrdRi3hweCf1BRs3arHRmw84/edit#gid=0"
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "reminder": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('reminder', `El recordatorio que agregara el usuario`, 'string') }}",
+                        "reminder_date": "={{ DateTime.fromISO($fromAI('reminder_date', `La fecha del recordatorio en formato ISO`, 'string')) }}",
+                        "validating_day": "={{ DateTime.fromISO($fromAI('reminder_date', `La fecha del recordatorio en formato ISO`, 'string')).format('d/MM') }}",
+                        "ID": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('ID__using_to_match_', `identificador del reminder`, 'string') }}"
+                    },
+                    "matchingColumns": [
+                        "ID"
+                    ],
+                    "schema": [
+                        {
+                            "id": "ID",
+                            "displayName": "ID",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true,
+                            "removed": false
+                        },
+                        {
+                            "id": "reminder",
+                            "displayName": "reminder",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true
+                        },
+                        {
+                            "id": "telefono",
+                            "displayName": "telefono",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true,
+                            "removed": true
+                        },
+                        {
+                            "id": "reminder_date",
+                            "displayName": "reminder_date",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true
+                        },
+                        {
+                            "id": "validating_day",
+                            "displayName": "validating_day",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true
+                        },
+                        {
+                            "id": "completed",
+                            "displayName": "completed",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true,
+                            "removed": true
+                        },
+                        {
+                            "id": "created_at",
+                            "displayName": "created_at",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true,
+                            "removed": true
+                        },
+                        {
+                            "id": "row_number",
+                            "displayName": "row_number",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "number",
+                            "canBeUsedToMatch": true,
+                            "readOnly": true,
+                            "removed": true
+                        }
+                    ],
+                    "attemptToConvertTypes": false,
+                    "convertFieldsToString": false
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.googleSheetsTool",
+            "typeVersion": 4.7,
+            "position": [
+                352,
+                192
+            ],
+            "id": "12583a30-8adf-4e4e-9667-5c5a15f607e3",
+            "name": "actualizar",
+            "credentials": {}
+        },
+        {
+            "parameters": {
+                "descriptionType": "manual",
+                "toolDescription": "elimina un recordatorio",
+                "authentication": "serviceAccount",
+                "operation": "delete",
+                "documentId": {
+                    "__rl": true,
+                    "value": "1vRwH1GqEP-KWBnKMggMQrdRi3hweCf1BRs3arHRmw84",
+                    "mode": "list",
+                    "cachedResultName": "reminders",
+                    "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vRwH1GqEP-KWBnKMggMQrdRi3hweCf1BRs3arHRmw84/edit?usp=drivesdk"
+                },
+                "sheetName": {
+                    "__rl": true,
+                    "value": "gid=0",
+                    "mode": "list",
+                    "cachedResultName": "reminder",
+                    "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vRwH1GqEP-KWBnKMggMQrdRi3hweCf1BRs3arHRmw84/edit#gid=0"
+                },
+                "startIndex": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start_Row_Number', `El identificador del reminder`, 'number') }}"
+            },
+            "type": "n8n-nodes-base.googleSheetsTool",
+            "typeVersion": 4.7,
+            "position": [
+                480,
+                192
+            ],
+            "id": "be86e76c-277d-4320-963a-ae46a721d64d",
+            "name": "eliminar",
+            "credentials": {}
+        }
+    ],
+    "connections": {
+        "agregar": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "MCP Server Trigger",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "listar": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "MCP Server Trigger",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "dates": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "MCP Server Trigger",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "actualizar": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "MCP Server Trigger",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "eliminar": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "MCP Server Trigger",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "pinData": {},
+    "meta": {}
+}
