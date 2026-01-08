@@ -1,11 +1,11 @@
 # Obten un tunnel gratuito usadno TuneTLink
 
-![TuneTLink](https://tunetlink.conglomere.com)
+[TuneTLink](https://tunetlink.conglomere.com)
 
 # Requisitos:
 
 - [ ] Credencial gemini
-![Apikey](https://aistudio.google.com/api-keys)
+[Apikey](https://aistudio.google.com/api-keys)
 
 - [ ] Token de telegram (Visto en la primera clase).
 
