@@ -1,0 +1,477 @@
+{
+    "name": "Clase 7 - Asistente de salud 150126",
+    "nodes": [
+        {
+            "parameters": {
+                "options": {
+                    "systemMessage": "=Eres un asistente de atención para productos de salud y medicamentos.\n\nInicia siempre saludando al usuario de forma amable e indica que estás disponible para ayudarle con cualquier consulta sobre medicamentos, productos de salud o su uso.\n\nUsa la herramienta search_product para buscar productos según la solicitud del usuario.\n\nReglas de respuesta:\n\nResponde siempre de forma amena, clara y directa, sin textos largos.\n\nSi encuentras el producto solicitado, indícalo claramente y ofrece ayuda adicional.\n\nSi no encuentras el producto exacto, informa con honestidad que no se consiguió y, si existen, menciona:\n“No contamos con ese producto, pero tenemos algunos similares como: [productos similares]”\n\nSi la búsqueda no tiene relación con productos de salud, indícalo de forma amable.\n\nNo muestres imágenes a menos que el usuario diga explícitamente que desea ver el producto.\n\nNo proporciones precios directamente.\n\nLa url de compra solo se comparte cuando el usuario indica que desea comprar o pagar.\n\nAclara que los precios se manejan a través de un asesor.\n\nIndica que la información completa del producto está disponible en su url informativa o en la url de compra.\n\nUso de herramientas:\n\nUsa search_product para todas las búsquedas de productos.\n\nUsa asesor únicamente cuando:\n\nEl usuario solicite precios\n\nNo puedas atender la solicitud\n\nEl usuario pida hablar con una persona\n\nCuando uses asesor, responde siempre algo como:\n“Con gusto, voy a elevar tu consulta a un asesor para que te ayude mejor. Por favor espera un momento.”"
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "typeVersion": 3.1,
+            "position": [
+                232,
+                -224
+            ],
+            "id": "8a850ed3-2b02-4fcc-80a6-6ae4fba80f0f",
+            "name": "AI Agent",
+            "retryOnFail": true
+        },
+        {
+            "parameters": {
+                "updates": [
+                    "message"
+                ],
+                "additionalFields": {}
+            },
+            "type": "n8n-nodes-base.telegramTrigger",
+            "typeVersion": 1.2,
+            "position": [
+                -336,
+                -224
+            ],
+            "id": "1f1f1d9e-2608-415b-8a7c-4d05c147ecd1",
+            "name": "Telegram Trigger",
+            "webhookId": "b0a5ba22-db7c-4e90-bbb5-f85efe0099f7",
+            "credentials": {}
+        },
+        {
+            "parameters": {
+                "sessionIdType": "customKey",
+                "sessionKey": "=products_memory",
+                "sessionTTL": 300
+            },
+            "type": "@n8n/n8n-nodes-langchain.memoryRedisChat",
+            "typeVersion": 1.5,
+            "position": [
+                240,
+                0
+            ],
+            "id": "9f1aaaee-c103-4613-8230-1488e6281a23",
+            "name": "memoria",
+            "retryOnFail": true,
+            "credentials": {}
+        },
+        {
+            "parameters": {
+                "model": "moonshotai/kimi-k2-instruct-0905",
+                "options": {
+                    "maxTokensToSample": 4096
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+            "typeVersion": 1,
+            "position": [
+                112,
+                0
+            ],
+            "id": "972141a0-2e78-4a0d-9a8e-069757b4fdb8",
+            "name": "modelo",
+            "retryOnFail": true,
+            "credentials": {}
+        },
+        {
+            "parameters": {
+                "toolDescription": "Busca productos en la base de datos",
+                "url": "https://<colocar-tu-url-aqui>/collections/productos/documents/search",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendQuery": true,
+                "queryParameters": {
+                    "parameters": [
+                        {
+                            "name": "q",
+                            "value": "={{ $fromAI('query', `la query del usuario`, 'string') }}"
+                        },
+                        {
+                            "name": "query_by",
+                            "value": "nombre,tags,desc,tdesc,modo_empleo,ficha_tecnica,uso_sugerido"
+                        },
+                        {
+                            "name": "num_typos",
+                            "value": "0"
+                        },
+                        {
+                            "name": "query_by_weights",
+                            "value": "5,4,3,3,2,2,1"
+                        }
+                    ]
+                },
+                "options": {},
+                "optimizeResponse": true,
+                "dataField": "hits",
+                "fieldsToInclude": "selected",
+                "fields": "document,highlight,highlights"
+            },
+            "type": "n8n-nodes-base.httpRequestTool",
+            "typeVersion": 4.3,
+            "position": [
+                368,
+                0
+            ],
+            "id": "beda7134-f836-44a1-9c99-321d648b96f9",
+            "name": "search_products",
+            "credentials": {}
+        },
+        {
+            "parameters": {
+                "description": "Eleva la consulta con un asesor",
+                "jsCode": "return \"El asesor fue notificado\""
+            },
+            "type": "@n8n/n8n-nodes-langchain.toolCode",
+            "typeVersion": 1.3,
+            "position": [
+                496,
+                0
+            ],
+            "id": "98ccf853-b3da-421f-b430-f199c9bbd4a1",
+            "name": "asesor"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "954e1b5d-97e9-4a99-9c2d-aa3547fc8b64",
+                            "name": "chatInput",
+                            "value": "={{ $json.message?.text }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "c0b96aeb-eda0-4c1c-885b-02317dff203e",
+                            "name": "sessionId",
+                            "value": "={{ $json.message?.from?.id }}",
+                            "type": "number"
+                        },
+                        {
+                            "id": "d8fb9789-3805-4f73-a44b-cf2d5cfda530",
+                            "name": "message_id",
+                            "value": "={{ $json.message?.message_id }}",
+                            "type": "number"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -112,
+                -224
+            ],
+            "id": "62b14d7c-8823-4f8f-a9c6-e908f1c3e299",
+            "name": "vars"
+        },
+        {
+            "parameters": {
+                "chatId": "={{ $('vars').item.json.sessionId }}",
+                "text": "={{ $('loop').item.json.message }}",
+                "additionalFields": {
+                    "appendAttribution": false,
+                    "reply_to_message_id": "={{ $('vars').item.json.message_id }}"
+                }
+            },
+            "type": "n8n-nodes-base.telegram",
+            "typeVersion": 1.2,
+            "position": [
+                1600,
+                -368
+            ],
+            "id": "75ca596b-5493-4eee-a153-25726f9609f1",
+            "name": "send-message",
+            "webhookId": "46b37fde-26f7-4e5d-b42e-06c49ba3471c",
+            "credentials": {}
+        },
+        {
+            "parameters": {
+                "operation": "sendChatAction",
+                "chatId": "={{ $('vars').item.json.sessionId }}"
+            },
+            "type": "n8n-nodes-base.telegram",
+            "typeVersion": 1.2,
+            "position": [
+                1376,
+                -368
+            ],
+            "id": "42331785-bcae-47cd-bc02-95c4288908a7",
+            "name": "Send a chat action",
+            "webhookId": "a1867829-ef7a-4497-ad8f-c58a863202bb",
+            "credentials": {}
+        },
+        {
+            "parameters": {
+                "options": {}
+            },
+            "type": "n8n-nodes-base.splitInBatches",
+            "typeVersion": 3,
+            "position": [
+                928,
+                -224
+            ],
+            "id": "3e1e3901-5a86-43e6-b4e4-5bbc03d9bb98",
+            "name": "loop"
+        },
+        {
+            "parameters": {
+                "amount": 0.5
+            },
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                1824,
+                -224
+            ],
+            "id": "1deaf8be-c86d-4428-bc2c-075c7aa5885a",
+            "name": "Wait",
+            "webhookId": "88f07f61-c921-4616-8316-73b1c5b04ad4"
+        },
+        {
+            "parameters": {
+                "jsCode": "return $input.first().json.output\n  .split(/\\n\\n/) \n  .map(message => ({\n    json: { message: message.trim() }\n  }))\n  .filter(item => item.json.message.length > 0);"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                704,
+                -224
+            ],
+            "id": "dd494cb8-7059-4769-b73d-33e2f86b5450",
+            "name": "split-message"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict",
+                        "version": 3
+                    },
+                    "conditions": [
+                        {
+                            "id": "539d887b-5be4-4a0b-a381-6e2e008ce8e4",
+                            "leftValue": "={{ $json.message }}",
+                            "rightValue": "",
+                            "operator": {
+                                "type": "string",
+                                "operation": "notEmpty",
+                                "singleValue": true
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.3,
+            "position": [
+                1152,
+                -296
+            ],
+            "id": "af8b1019-7e0c-4798-8fb2-4ece15bc8fbe",
+            "name": "If"
+        },
+        {
+            "parameters": {
+                "operation": "delete",
+                "key": "products_memory"
+            },
+            "type": "n8n-nodes-base.redis",
+            "typeVersion": 1,
+            "position": [
+                -336,
+                -592
+            ],
+            "id": "5f8f0dcc-ef08-43a9-a2f7-25078cfba84b",
+            "name": "Redis",
+            "credentials": {}
+        },
+        {
+            "parameters": {
+                "content": "# Borrar memora\n\n\n",
+                "height": 368,
+                "width": 640
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "position": [
+                -608,
+                -800
+            ],
+            "typeVersion": 1,
+            "id": "43539147-b482-4d0a-b594-5e19e677bffc",
+            "name": "Sticky Note"
+        },
+        {
+            "parameters": {
+                "content": "# Enviar mensaje en partes",
+                "height": 592,
+                "width": 1440,
+                "color": 3
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "position": [
+                576,
+                -528
+            ],
+            "typeVersion": 1,
+            "id": "c28c6178-443b-4268-bcdc-12dc006fb6b0",
+            "name": "Sticky Note1"
+        }
+    ],
+    "connections": {
+        "AI Agent": {
+            "main": [
+                [
+                    {
+                        "node": "split-message",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Telegram Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "vars",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "memoria": {
+            "ai_memory": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "ai_memory",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "modelo": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "search_products": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "asesor": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "vars": {
+            "main": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "send-message": {
+            "main": [
+                [
+                    {
+                        "node": "Wait",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Send a chat action": {
+            "main": [
+                [
+                    {
+                        "node": "send-message",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "loop": {
+            "main": [
+                [],
+                [
+                    {
+                        "node": "If",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Wait": {
+            "main": [
+                [
+                    {
+                        "node": "loop",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "split-message": {
+            "main": [
+                [
+                    {
+                        "node": "loop",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "If": {
+            "main": [
+                [
+                    {
+                        "node": "Send a chat action",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Wait",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "pinData": {},
+    "meta": {}
+}

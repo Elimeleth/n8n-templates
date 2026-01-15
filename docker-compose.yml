@@ -59,6 +59,16 @@ services:
       redis:
         condition: service_healthy
 
+  # Nuevo servicio Typesense
+  typesense:
+    image: typesense/typesense:30.0.rca37
+    container_name: typesense
+    ports:
+      - "8108:8108"
+    volumes:
+      - ./data:/data
+    command: "--data-dir /data --api-key=xyz123 --enable-cors"
+
 volumes:
   postgres_data:
   redis_data:

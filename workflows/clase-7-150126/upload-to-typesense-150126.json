@@ -1,0 +1,405 @@
+{
+    "name": "Upload to Typesense 150126",
+    "nodes": [
+        {
+            "parameters": {},
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                -1056,
+                -120
+            ],
+            "id": "484f0b2f-d139-407a-a715-7762c05c8a25",
+            "name": "When clicking ‘Execute workflow’"
+        },
+        {
+            "parameters": {
+                "documentId": {
+                    "__rl": true,
+                    "value": "1H27Acajv7Q5DcaVa09Xjm5GSTBxEBn9dqLYq8LPia-E",
+                    "mode": "id"
+                },
+                "sheetName": {
+                    "__rl": true,
+                    "value": 1098905689,
+                    "mode": "list",
+                    "cachedResultName": "products",
+                    "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1H27Acajv7Q5DcaVa09Xjm5GSTBxEBn9dqLYq8LPia-E/edit#gid=1098905689"
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.googleSheets",
+            "typeVersion": 4.7,
+            "position": [
+                -832,
+                -120
+            ],
+            "id": "673b71b7-b79f-4e81-b6bd-a3cb94126d21",
+            "name": "productos",
+            "credentials": {
+                "googleSheetsOAuth2Api": {}
+            }
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://<coloca-tu-url-aqui>/collections",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "{\n  \"name\": \"productos\",\n  \"locale\": \"es\",\n  \"enable_nested_fields\": true,\n  \"fields\": [\n    {\n      \"name\": \"id\",\n      \"type\": \"string\"\n    },\n    {\n      \"name\": \"nombre\",\n      \"type\": \"string\"\n    },\n    {\n      \"name\": \"tdesc\",\n      \"type\": \"string\"\n    },\n    {\n      \"name\": \"desc\",\n      \"type\": \"string\"\n    },\n    {\n      \"name\": \"modo_empleo\",\n      \"type\": \"string\"\n    },\n    {\n      \"name\": \"ficha_tecnica\",\n      \"type\": \"string\"\n    },\n    {\n      \"name\": \"uso_sugerido\",\n      \"type\": \"string\"\n    },\n    {\n      \"name\": \"tags\",\n      \"type\": \"string[]\",\n      \"facet\": true\n    },\n    {\n      \"name\": \"categoria\",\n      \"type\": \"string\",\n      \"facet\": true,\n      \"optional\": true\n    },\n    {\n      \"name\": \"especialidad\",\n      \"type\": \"string\",\n      \"facet\": true,\n      \"optional\": true\n    },\n    {\n      \"name\": \"marca\",\n      \"type\": \"string\",\n      \"facet\": true,\n      \"optional\": true\n    },\n    {\n      \"name\": \"url_informativa\",\n      \"type\": \"string\",\n      \"index\": false\n    },\n    {\n      \"name\": \"url_de_compra\",\n      \"type\": \"string\",\n      \"index\": false\n    },\n    {\n      \"name\": \"image\",\n      \"type\": \"string\",\n      \"index\": false\n    },\n    {\n      \"name\": \"created_at\",\n      \"type\": \"int64\"\n    }\n  ],\n  \"default_sorting_field\": \"created_at\"\n}\n",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.3,
+            "position": [
+                144,
+                432
+            ],
+            "id": "517aadc0-a49e-431c-8676-246444c1ae7c",
+            "name": "create typesense collection",
+            "credentials": {
+                "httpHeaderAuth": {}
+            }
+        },
+        {
+            "parameters": {
+                "method": "DELETE",
+                "url": "https://<coloca-tu-url-aqui>/collections/productos",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.3,
+            "position": [
+                -544,
+                416
+            ],
+            "id": "77038a2f-24bd-4c2f-ac1f-7eaba0ef8914",
+            "name": "delete collection",
+            "credentials": {
+                "httpHeaderAuth": {}
+            },
+            "disabled": true
+        },
+        {
+            "parameters": {
+                "url": "https://<coloca-tu-url-aqui>/collections/productos/documents/search",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendQuery": true,
+                "queryParameters": {
+                    "parameters": [
+                        {
+                            "name": "q",
+                            "value": "=bluem"
+                        },
+                        {
+                            "name": "query_by",
+                            "value": "=tags,modo_empleo,desc,ficha_tecnica,uso_sugerido,nombre"
+                        },
+                        {
+                            "name": "num_typos",
+                            "value": "0"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.3,
+            "position": [
+                -1152,
+                416
+            ],
+            "id": "4938bf4c-e817-46d6-a268-931071bc421d",
+            "name": "search",
+            "credentials": {
+                "httpHeaderAuth": {}
+            }
+        },
+        {
+            "parameters": {
+                "options": {}
+            },
+            "type": "n8n-nodes-base.splitInBatches",
+            "typeVersion": 3,
+            "position": [
+                -384,
+                -120
+            ],
+            "id": "644b00de-7118-4fd7-a06f-e5a4eb05a116",
+            "name": "Loop Over Items"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://<coloca-tu-url-aqui>/collections/productos/documents?action=upsert",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={{ $json }}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.3,
+            "position": [
+                -160,
+                -192
+            ],
+            "id": "fb8d5fcd-df17-4651-af68-6a562cf24148",
+            "name": "cargar collection",
+            "retryOnFail": true,
+            "credentials": {
+                "httpHeaderAuth": {}
+            }
+        },
+        {
+            "parameters": {
+                "amount": 0.3
+            },
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                64,
+                -120
+            ],
+            "id": "687058d7-43f1-4fd6-9a01-e750ca7c16e5",
+            "name": "Wait1",
+            "webhookId": "cb84299e-0bef-4860-89f8-f586c97f668f"
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "306dbe32-7545-4586-bfab-a76d5fa1b004",
+                            "name": "id",
+                            "value": "={{ String($json.row_number) }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "980c35d2-078f-4961-91d8-a4d6b67ddf6b",
+                            "name": "nombre",
+                            "value": "={{ $json.nombre }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "59fb6390-23e0-40c5-8c5c-5c4018608e65",
+                            "name": "tdesc",
+                            "value": "={{ $json.tdesc }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "fd6f4c38-b447-4ba6-9e7e-f1b577de408c",
+                            "name": "desc",
+                            "value": "={{ $json.desc }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "5e65006b-4c81-4aad-884d-a1ce60f70532",
+                            "name": "url_informativa",
+                            "value": "={{ $json.url_informativa }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "fa048040-6e93-43ef-a04e-c318bdf10fc6",
+                            "name": "modo_empleo",
+                            "value": "={{ $json.modo_empleo }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "dee7e475-82ad-4bab-91e2-f07739fd0a54",
+                            "name": "ficha_tecnica",
+                            "value": "={{ $json.ficha_tecnica }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "960c44cb-5dc9-45d4-8b6b-0b2493534404",
+                            "name": "uso_sugerido",
+                            "value": "={{ $json.uso_sugerido }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "8679e23d-e8dc-4579-957f-79d2e1b9e965",
+                            "name": "tags",
+                            "value": "={{ $json.tags.split(',') }}",
+                            "type": "array"
+                        },
+                        {
+                            "id": "645560a7-e14d-4f8c-a31e-1b680e8af478",
+                            "name": "url_de_compra",
+                            "value": "={{ $json.url_de_compra }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "04f2fcc3-b43f-447e-b4cb-ff2b09a29826",
+                            "name": "image",
+                            "value": "={{ $json.image }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "12ca3112-108e-4065-96d9-236fdb3f9a4d",
+                            "name": "created_at",
+                            "value": "={{ DateTime.now().toMillis() }}",
+                            "type": "number"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -608,
+                -120
+            ],
+            "id": "5b5fcfab-1691-4b74-a112-64ca323e22d3",
+            "name": "var"
+        },
+        {
+            "parameters": {
+                "content": "# Borrar collección",
+                "height": 256,
+                "width": 288
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "position": [
+                -640,
+                320
+            ],
+            "typeVersion": 1,
+            "id": "22b8a704-ce16-44e4-bdb5-af2938c009e6",
+            "name": "Sticky Note"
+        },
+        {
+            "parameters": {
+                "content": "# Buscar productos",
+                "height": 272,
+                "width": 416
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "position": [
+                -1312,
+                304
+            ],
+            "typeVersion": 1,
+            "id": "e0ecbf1a-e74e-49fe-b0b7-00a5200f2287",
+            "name": "Sticky Note1"
+        },
+        {
+            "parameters": {
+                "content": "# Crear Collecion",
+                "height": 192,
+                "width": 624
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "position": [
+                -128,
+                400
+            ],
+            "typeVersion": 1,
+            "id": "d5863b57-8bfc-47b3-8dfd-b475d3b0a4f5",
+            "name": "Sticky Note2"
+        },
+        {
+            "parameters": {
+                "content": "# Cargar productos",
+                "height": 368,
+                "width": 832
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "position": [
+                -528,
+                -328
+            ],
+            "typeVersion": 1,
+            "id": "ba1801de-2bfb-491b-8cea-eb1c8bb9ee64",
+            "name": "Sticky Note3"
+        }
+    ],
+    "connections": {
+        "When clicking ‘Execute workflow’": {
+            "main": [
+                [
+                    {
+                        "node": "productos",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "productos": {
+            "main": [
+                [
+                    {
+                        "node": "var",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "create typesense collection": {
+            "main": [
+                []
+            ]
+        },
+        "delete collection": {
+            "main": [
+                []
+            ]
+        },
+        "Loop Over Items": {
+            "main": [
+                [],
+                [
+                    {
+                        "node": "cargar collection",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "cargar collection": {
+            "main": [
+                [
+                    {
+                        "node": "Wait1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Wait1": {
+            "main": [
+                [
+                    {
+                        "node": "Loop Over Items",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "var": {
+            "main": [
+                [
+                    {
+                        "node": "Loop Over Items",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "pinData": {},
+    "meta": {}
+}
