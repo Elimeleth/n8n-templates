@@ -9,9 +9,9 @@
 2. Configurar api typesense en n8n
   - Dirigirse a [TuNetLink](https://tunetlink.conglomere.com/app/ingress)
   - Crear nuevo hostname; parametros:
-    [ protocolo ] http
-    [ servicio o IP ] localhost
-    [ puerto ] 8108
+    [ protocolo ] http /
+    [ servicio o IP ] localhost /
+    [ puerto ] 8108 /
   - Copiar url para usarla en los nodos HTTP de n8n referente a typesense
   - Configurar apikey typesense
         name: `x-typesense-api-key`
@@ -38,10 +38,10 @@ ID DE GOOGLE SHEETS: `1H27Acajv7Q5DcaVa09Xjm5GSTBxEBn9dqLYq8LPia-E`
 
 URL DASHBOARD TYPESENSE: [DASHBOARD](https://typesense.printo.in)
 Configurar:
-    [ protocolo ]: http
-    [ host ]: localhost
-    [ puerto ]: 8108
-    [ path ]: DEJAR VACIO
+    [ protocolo ]: http /
+    [ host ]: localhost /
+    [ puerto ]: 8108 /
+    [ path ]: DEJAR VACIO /
 
 - Clicar login
 ---
