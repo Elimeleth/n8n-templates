@@ -1,0 +1,767 @@
+{
+    "name": "Telegram asistente de voz 220126",
+    "nodes": [
+        {
+            "parameters": {
+                "updates": [
+                    "message"
+                ],
+                "additionalFields": {}
+            },
+            "type": "n8n-nodes-base.telegramTrigger",
+            "typeVersion": 1.2,
+            "position": [
+                -1568,
+                -64
+            ],
+            "id": "327933b2-a314-46a4-891e-17c871fd2ebd",
+            "name": "Telegram Trigger",
+            "webhookId": "b0a5ba22-db7c-4e90-bbb5-f85efe0099f7",
+            "credentials": {}
+        },
+        {
+            "parameters": {
+                "model": "moonshotai/kimi-k2-instruct-0905",
+                "options": {
+                    "maxTokensToSample": 4096
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+            "typeVersion": 1,
+            "position": [
+                -448,
+                160
+            ],
+            "id": "1791af87-790a-4122-a10c-189b04d17c72",
+            "name": "modelo",
+            "retryOnFail": true,
+            "credentials": {
+                "groqApi": {
+                    "id": "re0mM8lvsk2LXT1H",
+                    "name": "Groq account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "toolDescription": "Busca productos en la base de datos",
+                "url": "https://<TU-URL-VA-AQUI>/collections/productos/documents/search",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendQuery": true,
+                "queryParameters": {
+                    "parameters": [
+                        {
+                            "name": "q",
+                            "value": "={{ $fromAI('query', `la query del usuario`, 'string') }}"
+                        },
+                        {
+                            "name": "query_by",
+                            "value": "nombre,tags,desc,tdesc,modo_empleo,ficha_tecnica,uso_sugerido"
+                        },
+                        {
+                            "name": "num_typos",
+                            "value": "0"
+                        },
+                        {
+                            "name": "query_by_weights",
+                            "value": "5,4,3,3,2,2,1"
+                        }
+                    ]
+                },
+                "options": {},
+                "optimizeResponse": true,
+                "dataField": "hits",
+                "fieldsToInclude": "selected",
+                "fields": "document,highlight,highlights"
+            },
+            "type": "n8n-nodes-base.httpRequestTool",
+            "typeVersion": 4.3,
+            "position": [
+                -160,
+                160
+            ],
+            "id": "2d85cfc3-d39e-4173-b808-992d64f9e864",
+            "name": "search_products",
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "sfuNgalxivJcqX2j",
+                    "name": "Typesense"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "assignments": {
+                    "assignments": [
+                        {
+                            "id": "954e1b5d-97e9-4a99-9c2d-aa3547fc8b64",
+                            "name": "chatInput",
+                            "value": "={{ $('Telegram Trigger').item.json.message?.text || $('Transcribe a recording').item.json.content.parts[0].text  }}",
+                            "type": "string"
+                        },
+                        {
+                            "id": "c0b96aeb-eda0-4c1c-885b-02317dff203e",
+                            "name": "sessionId",
+                            "value": "={{  $('Telegram Trigger').item.json.message.from?.id }}",
+                            "type": "number"
+                        },
+                        {
+                            "id": "d8fb9789-3805-4f73-a44b-cf2d5cfda530",
+                            "name": "message_id",
+                            "value": "={{  $('Telegram Trigger').item.json.message.message_id }}",
+                            "type": "number"
+                        },
+                        {
+                            "id": "8930d0c7-38ae-466e-bf47-4e6d7d490889",
+                            "name": "file_id",
+                            "value": "",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.set",
+            "typeVersion": 3.4,
+            "position": [
+                -672,
+                -64
+            ],
+            "id": "4dcc081d-31d4-45fb-8cd2-cd27a977a50a",
+            "name": "vars"
+        },
+        {
+            "parameters": {
+                "chatId": "={{ $('vars').item.json.sessionId }}",
+                "text": "={{ $('loop').item.json.content }}",
+                "additionalFields": {
+                    "appendAttribution": false,
+                    "reply_to_message_id": "={{ $('vars').item.json.message_id }}"
+                }
+            },
+            "type": "n8n-nodes-base.telegram",
+            "typeVersion": 1.2,
+            "position": [
+                1136,
+                -400
+            ],
+            "id": "0e0a31b0-884c-4945-ac99-ef59f3c784db",
+            "name": "send-message",
+            "webhookId": "46b37fde-26f7-4e5d-b42e-06c49ba3471c",
+            "credentials": {
+                "telegramApi": {
+                    "id": "U3yNkhUzRFtwJQNw",
+                    "name": "local"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "sendChatAction",
+                "chatId": "={{ $('vars').item.json.sessionId }}"
+            },
+            "type": "n8n-nodes-base.telegram",
+            "typeVersion": 1.2,
+            "position": [
+                912,
+                -400
+            ],
+            "id": "e38b14db-6f8a-40bc-a1bd-7ae1f6546fad",
+            "name": "Send a chat action",
+            "webhookId": "a1867829-ef7a-4497-ad8f-c58a863202bb",
+            "credentials": {
+                "telegramApi": {
+                    "id": "U3yNkhUzRFtwJQNw",
+                    "name": "local"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "options": {}
+            },
+            "type": "n8n-nodes-base.splitInBatches",
+            "typeVersion": 3,
+            "position": [
+                240,
+                -64
+            ],
+            "id": "5a40cf41-a3e9-435a-842b-87fa73551603",
+            "name": "loop"
+        },
+        {
+            "parameters": {
+                "amount": 0.5
+            },
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                1360,
+                64
+            ],
+            "id": "b74769aa-c5f7-48bd-b7c8-fb130347b9aa",
+            "name": "Wait",
+            "webhookId": "88f07f61-c921-4616-8316-73b1c5b04ad4"
+        },
+        {
+            "parameters": {
+                "jsCode": "const input = $input.first().json.output\n\n// El uso de paréntesis en el regex permite que split() conserve las URLs en el resultado\nconst urlRegex = /(https?:\\/\\/[^\\s]+)/g;\n\n// Dividimos el texto, limpiamos espacios y filtramos elementos vacíos\nconst parts = input.split(urlRegex)\n  .map(part => part.trim())\n  .filter(part => part.length > 0);\n\n// Retornamos cada fragmento como un ítem individual para que n8n los procese uno a uno\nreturn parts.map(item => ({\n  json: { content: item }\n}));"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                16,
+                -64
+            ],
+            "id": "e132a31d-dd8b-44a9-9020-dca7718dffe8",
+            "name": "split-message"
+        },
+        {
+            "parameters": {
+                "options": {
+                    "systemMessage": "=Eres un asistente de atención para productos de salud y medicamentos.\n\nInicia siempre saludando al usuario de forma amable e indica que estás disponible para ayudarle con cualquier consulta sobre medicamentos, productos de salud o su uso.\n\nUsa la herramienta search_product para buscar productos según la solicitud del usuario.\n\nReglas de respuesta:\n\nResponde siempre de forma amena, clara y directa, sin textos largos.\n\nSi encuentras el producto solicitado, indícalo claramente y ofrece ayuda adicional.\n\nSi no encuentras el producto exacto, informa con honestidad que no se consiguió y, si existen, menciona:\n“No contamos con ese producto, pero tenemos algunos similares como: [productos similares]”\n\nSi la búsqueda no tiene relación con productos de salud, indícalo de forma amable.\n\nNo muestres imágenes a menos que el usuario diga explícitamente que desea ver el producto.\n\nNo proporciones precios directamente.\n\nLa url de compra solo se comparte cuando el usuario indica que desea comprar o pagar.\n\nIndica que la información completa del producto está disponible en su url informativa o en la url de compra.\n\nUso de herramientas:\n\nUsa search_product para todas las búsquedas de productos."
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "typeVersion": 3.1,
+            "position": [
+                -400,
+                -64
+            ],
+            "id": "cea914dd-61b6-443e-af6d-3d99712f11b4",
+            "name": "AI Agent1",
+            "retryOnFail": true
+        },
+        {
+            "parameters": {
+                "resource": "audio",
+                "modelId": {
+                    "__rl": true,
+                    "value": "models/gemini-2.5-flash",
+                    "mode": "list",
+                    "cachedResultName": "models/gemini-2.5-flash"
+                },
+                "inputType": "binary",
+                "binaryPropertyName": "=data",
+                "options": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.googleGemini",
+            "typeVersion": 1.1,
+            "position": [
+                -896,
+                -144
+            ],
+            "id": "2e023c1c-7198-4317-9511-cbfde03d1d7e",
+            "name": "Transcribe a recording",
+            "credentials": {
+                "googlePalmApi": {
+                    "id": "1LYChK0eURs8l6wi",
+                    "name": "gemini clases n8n"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "rules": {
+                    "values": [
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 3
+                                },
+                                "conditions": [
+                                    {
+                                        "leftValue": "={{ $json.message.voice }}",
+                                        "rightValue": "",
+                                        "operator": {
+                                            "type": "object",
+                                            "operation": "notEmpty",
+                                            "singleValue": true
+                                        },
+                                        "id": "6644701e-a261-4bcc-bdb4-0d81bb043133"
+                                    }
+                                ],
+                                "combinator": "and"
+                            },
+                            "renameOutput": true,
+                            "outputKey": "audio"
+                        },
+                        {
+                            "conditions": {
+                                "options": {
+                                    "caseSensitive": true,
+                                    "leftValue": "",
+                                    "typeValidation": "strict",
+                                    "version": 3
+                                },
+                                "conditions": [
+                                    {
+                                        "id": "55542696-b3e8-4038-b4cf-ec94f72ae832",
+                                        "leftValue": "={{ $json.message.text }}",
+                                        "rightValue": "",
+                                        "operator": {
+                                            "type": "string",
+                                            "operation": "notEmpty",
+                                            "singleValue": true
+                                        }
+                                    }
+                                ],
+                                "combinator": "and"
+                            },
+                            "renameOutput": true,
+                            "outputKey": "text"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.switch",
+            "typeVersion": 3.4,
+            "position": [
+                -1344,
+                -64
+            ],
+            "id": "231e1232-4676-42af-ab4f-d450bdd209e1",
+            "name": "Switch"
+        },
+        {
+            "parameters": {
+                "resource": "file",
+                "fileId": "={{ $json.message.voice.file_id }}",
+                "additionalFields": {
+                    "mimeType": "={{ $json.message.voice.mime_type }}"
+                }
+            },
+            "type": "n8n-nodes-base.telegram",
+            "typeVersion": 1.2,
+            "position": [
+                -1120,
+                -144
+            ],
+            "id": "fbcf80e4-27f4-4e1f-8f8c-d886b9f82293",
+            "name": "Get a file",
+            "webhookId": "ac77a971-821c-4e02-8245-51eea999465c",
+            "credentials": {}
+        },
+        {
+            "parameters": {
+                "resource": "speech",
+                "voice": {
+                    "__rl": true,
+                    "mode": "id",
+                    "value": "86V9x9hrQds83qf7zaGn"
+                },
+                "text": "={{ $('If1').item.json.content }}",
+                "additionalOptions": {},
+                "requestOptions": {}
+            },
+            "type": "@elevenlabs/n8n-nodes-elevenlabs.elevenLabs",
+            "typeVersion": 1,
+            "position": [
+                912,
+                -112
+            ],
+            "id": "d9a1a816-8404-4469-8dbb-92683294c77a",
+            "name": "Convert text to speech",
+            "credentials": {
+                "elevenLabsApi": {
+                    "id": "swLmCGabFMwAtLOe",
+                    "name": "ElevenLabs account 2"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "sendAudio",
+                "chatId": "={{ $('vars').item.json.sessionId }}",
+                "binaryData": true,
+                "additionalFields": {
+                    "fileName": "={{ $binary.data.fileName }}"
+                }
+            },
+            "type": "n8n-nodes-base.telegram",
+            "typeVersion": 1.2,
+            "position": [
+                1136,
+                -16
+            ],
+            "id": "203871ee-1428-4a7d-a59a-53ed22ee1870",
+            "name": "Send an audio file",
+            "webhookId": "b66af60e-76da-47f8-a881-c5afb1b80933",
+            "credentials": {
+                "telegramApi": {
+                    "id": "U3yNkhUzRFtwJQNw",
+                    "name": "local"
+                }
+            }
+        },
+        {
+            "parameters": {},
+            "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+            "typeVersion": 1.3,
+            "position": [
+                -320,
+                160
+            ],
+            "id": "c5d4ae6a-677a-4161-a8d7-72550f42fb4d",
+            "name": "Simple Memory"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict",
+                        "version": 3
+                    },
+                    "conditions": [
+                        {
+                            "id": "62ea0432-2526-4622-81ac-4b4dbecf9154",
+                            "leftValue": "={{ $json.content }}",
+                            "rightValue": "=/(https?:\\/\\/[^\\s]+)/g",
+                            "operator": {
+                                "type": "string",
+                                "operation": "regex"
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.3,
+            "position": [
+                688,
+                -208
+            ],
+            "id": "a13d072b-60db-4133-b793-3e4ef192b94b",
+            "name": "If1"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict",
+                        "version": 3
+                    },
+                    "conditions": [
+                        {
+                            "id": "539d887b-5be4-4a0b-a381-6e2e008ce8e4",
+                            "leftValue": "={{ $json.content }}",
+                            "rightValue": "",
+                            "operator": {
+                                "type": "string",
+                                "operation": "notEmpty",
+                                "singleValue": true
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.3,
+            "position": [
+                464,
+                -144
+            ],
+            "id": "638d7d36-03c8-47e5-bec4-d16932ffd931",
+            "name": "If"
+        },
+        {
+            "parameters": {
+                "content": "Send audio",
+                "height": 272,
+                "width": 672
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "position": [
+                736,
+                -224
+            ],
+            "typeVersion": 1,
+            "id": "4389a1a1-65b8-4552-afd9-0665f68af704",
+            "name": "Sticky Note"
+        },
+        {
+            "parameters": {
+                "content": "Transcriptor",
+                "height": 288,
+                "width": 544
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "position": [
+                -1232,
+                -272
+            ],
+            "typeVersion": 1,
+            "id": "38960448-ba60-4034-8cd2-78ab07a364b6",
+            "name": "Sticky Note1"
+        },
+        {
+            "parameters": {
+                "operation": "sendChatAction",
+                "chatId": "={{ $('vars').item.json.sessionId }}",
+                "action": "record_audio"
+            },
+            "type": "n8n-nodes-base.telegram",
+            "typeVersion": 1.2,
+            "position": [
+                1136,
+                -208
+            ],
+            "id": "9126293a-5010-4359-9c80-4a9d04182998",
+            "name": "Send a chat action1",
+            "webhookId": "376bca77-d9e0-4c56-a55d-6da46eee6b0e",
+            "credentials": {
+                "telegramApi": {
+                    "id": "U3yNkhUzRFtwJQNw",
+                    "name": "local"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Telegram Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Switch",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "modelo": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "AI Agent1",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "search_products": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "AI Agent1",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "vars": {
+            "main": [
+                [
+                    {
+                        "node": "AI Agent1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "send-message": {
+            "main": [
+                [
+                    {
+                        "node": "Wait",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Send a chat action": {
+            "main": [
+                [
+                    {
+                        "node": "send-message",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "loop": {
+            "main": [
+                [],
+                [
+                    {
+                        "node": "If",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Wait": {
+            "main": [
+                [
+                    {
+                        "node": "loop",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "split-message": {
+            "main": [
+                [
+                    {
+                        "node": "loop",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "AI Agent1": {
+            "main": [
+                [
+                    {
+                        "node": "split-message",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Transcribe a recording": {
+            "main": [
+                [
+                    {
+                        "node": "vars",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Switch": {
+            "main": [
+                [
+                    {
+                        "node": "Get a file",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "vars",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get a file": {
+            "main": [
+                [
+                    {
+                        "node": "Transcribe a recording",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Convert text to speech": {
+            "main": [
+                [
+                    {
+                        "node": "Send a chat action1",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Send an audio file",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Send an audio file": {
+            "main": [
+                [
+                    {
+                        "node": "Wait",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Simple Memory": {
+            "ai_memory": [
+                [
+                    {
+                        "node": "AI Agent1",
+                        "type": "ai_memory",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "If1": {
+            "main": [
+                [
+                    {
+                        "node": "Send a chat action",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Convert text to speech",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "If": {
+            "main": [
+                [
+                    {
+                        "node": "If1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Wait",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Send a chat action1": {
+            "main": [
+                []
+            ]
+        }
+    },
+    "pinData": {},
+    "meta": {}
+}
