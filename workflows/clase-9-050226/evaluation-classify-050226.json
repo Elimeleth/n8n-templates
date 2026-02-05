@@ -1,0 +1,338 @@
+{
+    "name": "evaluation-classify-050226",
+    "nodes": [
+        {
+            "parameters": {
+                "inputText": "={{ $json.text }}",
+                "categories": {
+                    "categories": [
+                        {
+                            "category": "compra",
+                            "description": "cuando el cliente tiene intencion de comprar un producto"
+                        },
+                        {
+                            "category": "precio",
+                            "description": "cuando el cliente tiene intencion de solicitar precios o hacer una cotizacion"
+                        },
+                        {
+                            "category": "informacion",
+                            "description": "cuando solo busca informacion"
+                        }
+                    ]
+                },
+                "options": {
+                    "fallback": "discard",
+                    "enableAutoFixing": true
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.textClassifier",
+            "typeVersion": 1.1,
+            "position": [
+                -96,
+                160
+            ],
+            "id": "e9cd7443-c152-4897-af68-ed8eadddde02",
+            "name": "Text Classifier"
+        },
+        {
+            "parameters": {
+                "dataTableId": {
+                    "__rl": true,
+                    "value": "1nR7jGKsEzW2nJek",
+                    "mode": "list",
+                    "cachedResultName": "classify_eval",
+                    "cachedResultUrl": "/projects/RTUxSaWTNyTCymto/datatables/1nR7jGKsEzW2nJek"
+                }
+            },
+            "type": "n8n-nodes-base.evaluationTrigger",
+            "typeVersion": 4.7,
+            "position": [
+                -544,
+                160
+            ],
+            "id": "7359cd48-0967-400a-aed6-c1d371e865dd",
+            "name": "When fetching a dataset row1"
+        },
+        {
+            "parameters": {
+                "dataTableId": {
+                    "__rl": true,
+                    "value": "1nR7jGKsEzW2nJek",
+                    "mode": "list",
+                    "cachedResultName": "classify_eval",
+                    "cachedResultUrl": "/projects/RTUxSaWTNyTCymto/datatables/1nR7jGKsEzW2nJek"
+                },
+                "outputs": {
+                    "values": [
+                        {
+                            "outputName": "actual_classify",
+                            "outputValue": "compra"
+                        }
+                    ]
+                }
+            },
+            "type": "n8n-nodes-base.evaluation",
+            "typeVersion": 4.8,
+            "position": [
+                256,
+                -32
+            ],
+            "id": "5c64a6f3-6074-4150-8f98-7dfb60275e58",
+            "name": "Evaluation"
+        },
+        {
+            "parameters": {
+                "dataTableId": {
+                    "__rl": true,
+                    "value": "1nR7jGKsEzW2nJek",
+                    "mode": "list",
+                    "cachedResultName": "classify_eval",
+                    "cachedResultUrl": "/projects/RTUxSaWTNyTCymto/datatables/1nR7jGKsEzW2nJek"
+                },
+                "outputs": {
+                    "values": [
+                        {
+                            "outputName": "actual_classify",
+                            "outputValue": "precio"
+                        }
+                    ]
+                }
+            },
+            "type": "n8n-nodes-base.evaluation",
+            "typeVersion": 4.8,
+            "position": [
+                256,
+                160
+            ],
+            "id": "1ec96743-0a01-4d0e-8a29-66761948a448",
+            "name": "Evaluation3"
+        },
+        {
+            "parameters": {
+                "dataTableId": {
+                    "__rl": true,
+                    "value": "1nR7jGKsEzW2nJek",
+                    "mode": "list",
+                    "cachedResultName": "classify_eval",
+                    "cachedResultUrl": "/projects/RTUxSaWTNyTCymto/datatables/1nR7jGKsEzW2nJek"
+                },
+                "outputs": {
+                    "values": [
+                        {
+                            "outputName": "actual_classify",
+                            "outputValue": "informacion"
+                        }
+                    ]
+                }
+            },
+            "type": "n8n-nodes-base.evaluation",
+            "typeVersion": 4.8,
+            "position": [
+                256,
+                352
+            ],
+            "id": "68cdaa59-e0f9-4870-9b08-8e6983178ba2",
+            "name": "Evaluation4"
+        },
+        {
+            "parameters": {
+                "operation": "setMetrics",
+                "metric": "customMetrics",
+                "metrics": {
+                    "assignments": [
+                        {
+                            "name": "score",
+                            "value": "={{ $json.true_classify == \"compra\" }}",
+                            "type": "number",
+                            "id": "63108b2c-594d-4fcb-b04b-76e53119c489"
+                        }
+                    ]
+                }
+            },
+            "type": "n8n-nodes-base.evaluation",
+            "typeVersion": 4.8,
+            "position": [
+                464,
+                -16
+            ],
+            "id": "18d98024-9fde-420c-81eb-ae93112707d0",
+            "name": "Evaluation5"
+        },
+        {
+            "parameters": {
+                "operation": "setMetrics",
+                "metric": "customMetrics",
+                "metrics": {
+                    "assignments": [
+                        {
+                            "name": "score",
+                            "value": "={{ $json.true_classify == \"precio\" }}",
+                            "type": "number",
+                            "id": "63108b2c-594d-4fcb-b04b-76e53119c489"
+                        }
+                    ]
+                }
+            },
+            "type": "n8n-nodes-base.evaluation",
+            "typeVersion": 4.8,
+            "position": [
+                480,
+                160
+            ],
+            "id": "a8e7505d-3d07-48b3-b495-8f6d2e0a68de",
+            "name": "Evaluation6"
+        },
+        {
+            "parameters": {
+                "operation": "setMetrics",
+                "metric": "customMetrics",
+                "metrics": {
+                    "assignments": [
+                        {
+                            "name": "score",
+                            "value": "={{ $json.true_classify == \"informacion\" }}",
+                            "type": "number",
+                            "id": "63108b2c-594d-4fcb-b04b-76e53119c489"
+                        }
+                    ]
+                }
+            },
+            "type": "n8n-nodes-base.evaluation",
+            "typeVersion": 4.8,
+            "position": [
+                480,
+                352
+            ],
+            "id": "2620ff68-8dbd-4a2c-bb88-867add636537",
+            "name": "Evaluation7"
+        },
+        {
+            "parameters": {
+                "amount": 1
+            },
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                -320,
+                160
+            ],
+            "id": "ede394ae-e804-41ff-8c53-9dd50a61677e",
+            "name": "Wait",
+            "webhookId": "3d82187d-7a4a-40f4-96d7-58aec0210166"
+        },
+        {
+            "parameters": {
+                "options": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+            "typeVersion": 1,
+            "position": [
+                -96,
+                400
+            ],
+            "id": "f8835b7d-576d-45c1-a0d7-971baa779cc1",
+            "name": "Google Gemini Chat Model",
+            "credentials": {
+                "googlePalmApi": {
+                    "id": "OGnUPC8Z7cztksWg",
+                    "name": "gemini mayam2"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Text Classifier": {
+            "main": [
+                [
+                    {
+                        "node": "Evaluation",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Evaluation3",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "Evaluation4",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "When fetching a dataset row1": {
+            "main": [
+                [
+                    {
+                        "node": "Wait",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Evaluation": {
+            "main": [
+                [
+                    {
+                        "node": "Evaluation5",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Evaluation3": {
+            "main": [
+                [
+                    {
+                        "node": "Evaluation6",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Evaluation4": {
+            "main": [
+                [
+                    {
+                        "node": "Evaluation7",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Wait": {
+            "main": [
+                [
+                    {
+                        "node": "Text Classifier",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Google Gemini Chat Model": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "Text Classifier",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "pinData": {},
+    "meta": {}
+}

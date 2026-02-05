@@ -1,0 +1,11 @@
+﻿id,text,true_classify,actual_classify,createdAt,updatedAt
+9,¿Cómo funciona la garantía de los productos electrónicos?,informacion,informacion,2026-02-05T14:47:12.369Z,2026-02-05T16:49:57.982Z
+10,¿Podría decirme el valor de la consulta con el especialista?,precio,precio,2026-02-05T14:47:12.369Z,2026-02-05T16:50:05.627Z
+1,¿Dónde puedo adquirir el nuevo modelo de laptop?,compra,compra,2026-02-05T14:47:12.369Z,2026-02-05T16:50:13.734Z
+2,¿Cuál es el costo de la suscripción mensual?,precio,precio,2026-02-05T14:47:12.369Z,2026-02-05T16:52:08.928Z
+3,¿Me podrían enviar las especificaciones técnicas del motor?,informacion,informacion,2026-02-05T14:47:12.369Z,2026-02-05T16:52:11.309Z
+4,Quiero agregar tres unidades al carrito de pedidos ahora mismo,compra,compra,2026-02-05T14:47:12.369Z,2026-02-05T16:52:13.594Z
+5,¿Tienen algún descuento si pago de contado?,precio,precio,2026-02-05T14:47:12.369Z,2026-02-05T16:52:15.816Z
+6,¿En qué horarios está abierta la sucursal del centro?,informacion,informacion,2026-02-05T14:47:12.369Z,2026-02-05T16:52:18.012Z
+7,Necesito que me generen una cotización formal para 50 sillas,precio,precio,2026-02-05T14:47:12.369Z,2026-02-05T16:52:20.527Z
+8,Estoy listo para proceder con el pago de mi pedido,compra,compra,2026-02-05T14:47:12.369Z,2026-02-05T16:52:24.756Z

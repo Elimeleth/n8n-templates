@@ -1,0 +1,11 @@
+﻿id,text,expected_name_extracted,expected_age_extratect,actual_name_extracted,actual_age_extracted,createdAt,updatedAt
+3,Soy Lucía y cumplí 12 hace poco,Lucía,12,Lucía,12,2026-02-05T16:26:18.314Z,2026-02-05T16:38:07.347Z
+4,"Me identifico como Roberto, con una edad de 50",Roberto,50,Roberto,50,2026-02-05T16:26:18.314Z,2026-02-05T16:38:33.199Z
+1,mi nombre es elimeleth y mi edad es 27,elimeleth,27,elimeleth,27,2026-02-05T16:26:18.314Z,2026-02-05T16:39:12.067Z
+2,"Hola, me llamo Carlos y tengo 35 años",Carlos,35,Carlos,35 años,2026-02-05T16:26:18.314Z,2026-02-05T16:39:13.189Z
+5,Mi nombre es Sofía y cuento con 22 años,Sofía,22,Sofía,22,2026-02-05T16:26:18.314Z,2026-02-05T16:39:14.333Z
+6,"Aquí se presenta Javier, de 41 años",Javier,41,Javier,41,2026-02-05T16:26:18.314Z,2026-02-05T16:39:15.568Z
+7,Me llamo Mariana y actualmente tengo 19 años,Mariana,19,Mariana,19 años,2026-02-05T16:26:18.314Z,2026-02-05T16:39:16.831Z
+8,"Soy Diego, un joven de 28 años de edad",Diego,28,Diego,28,2026-02-05T16:26:18.314Z,2026-02-05T16:39:18.051Z
+9,Mi nombre es Valentina y mi edad es 31,Valentina,31,Valentina,31,2026-02-05T16:26:18.314Z,2026-02-05T16:39:19.237Z
+10,"Hola, soy Andrés y tengo 45",Andrés,45,Andrés,45,2026-02-05T16:26:18.314Z,2026-02-05T16:39:20.491Z

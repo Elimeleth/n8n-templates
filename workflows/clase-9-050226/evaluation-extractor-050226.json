@@ -1,0 +1,180 @@
+{
+    "name": "evaluation-extractor-050226",
+    "nodes": [
+        {
+            "parameters": {
+                "dataTableId": {
+                    "__rl": true,
+                    "value": "a3vIkAVPdBZUsScC",
+                    "mode": "list",
+                    "cachedResultName": "evaluacion_nombre_edad",
+                    "cachedResultUrl": "/projects/RTUxSaWTNyTCymto/datatables/a3vIkAVPdBZUsScC"
+                }
+            },
+            "type": "n8n-nodes-base.evaluationTrigger",
+            "typeVersion": 4.7,
+            "position": [
+                -16,
+                592
+            ],
+            "id": "64977834-d235-4615-84be-479372495175",
+            "name": "get_data"
+        },
+        {
+            "parameters": {
+                "dataTableId": {
+                    "__rl": true,
+                    "value": "a3vIkAVPdBZUsScC",
+                    "mode": "list",
+                    "cachedResultName": "evaluacion_nombre_edad",
+                    "cachedResultUrl": "/projects/RTUxSaWTNyTCymto/datatables/a3vIkAVPdBZUsScC"
+                },
+                "outputs": {
+                    "values": [
+                        {
+                            "outputName": "actual_name_extracted",
+                            "outputValue": "={{ $json.output.name }}"
+                        },
+                        {
+                            "outputName": "actual_age_extracted",
+                            "outputValue": "={{ $json.output.age }}"
+                        }
+                    ]
+                }
+            },
+            "type": "n8n-nodes-base.evaluation",
+            "typeVersion": 4.8,
+            "position": [
+                560,
+                592
+            ],
+            "id": "42742299-65a1-439e-98e1-854c21cbfd51",
+            "name": "set_output"
+        },
+        {
+            "parameters": {
+                "operation": "setMetrics",
+                "metric": "customMetrics",
+                "metrics": {
+                    "assignments": [
+                        {
+                            "name": "score_name",
+                            "value": "={{ $('extractor').item.json.output.name == $('get_data').item.json.expected_name_extracted }}",
+                            "type": "number",
+                            "id": "63108b2c-594d-4fcb-b04b-76e53119c489"
+                        },
+                        {
+                            "id": "3fc4f12e-751c-4d8b-9fa2-5c84ef98863a",
+                            "name": "score_age",
+                            "value": "={{ $json.output.age == $('get_data').item.json.expected_age_extratect }}",
+                            "type": "number"
+                        }
+                    ]
+                }
+            },
+            "type": "n8n-nodes-base.evaluation",
+            "typeVersion": 4.8,
+            "position": [
+                784,
+                592
+            ],
+            "id": "4b4262d3-1484-4fd7-8270-444d126e132d",
+            "name": "evaluation"
+        },
+        {
+            "parameters": {
+                "options": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+            "typeVersion": 1,
+            "position": [
+                288,
+                816
+            ],
+            "id": "4878b302-32f9-49a7-a7ea-99b92254f0f5",
+            "name": "model",
+            "credentials": {
+                "googlePalmApi": {
+                    "id": "xbsoHIRtj0FXkTeG",
+                    "name": "gemini local"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "text": "={{ $json.text }}",
+                "attributes": {
+                    "attributes": [
+                        {
+                            "name": "name",
+                            "description": "el nombre del usuario",
+                            "required": true
+                        },
+                        {
+                            "name": "age",
+                            "description": "la edad del usuario",
+                            "required": true
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+            "typeVersion": 1.2,
+            "position": [
+                208,
+                592
+            ],
+            "id": "0255680f-c706-461e-9341-3cc91e6a9cfb",
+            "name": "extractor"
+        }
+    ],
+    "connections": {
+        "get_data": {
+            "main": [
+                [
+                    {
+                        "node": "extractor",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "set_output": {
+            "main": [
+                [
+                    {
+                        "node": "evaluation",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "model": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "extractor",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "extractor": {
+            "main": [
+                [
+                    {
+                        "node": "set_output",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "pinData": {},
+    "meta": {}
+}
